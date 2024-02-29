@@ -16,6 +16,48 @@ export const fetchData = createAsyncThunk(
   }
 )
 
+export const createNews = createAsyncThunk(
+  "newswebsite/createNews",
+  async (newNews: NewsObj, thunkAPI) => {
+    try {
+      const res = await fetch("https://newsdata-cdr7.onrender.com/data", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newNews),
+      })
+
+      if (!res.ok) {
+        throw new Error("Failed to create news")
+      }
+
+      return newNews
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue({error: error.message})
+    }
+  }
+)
+
+export const deleteNews = createAsyncThunk(
+  "newswebsite/deleteNews",
+  async (id: string | number, thunkAPI) => {
+    try {
+      const res = await fetch(`https://newsdata-cdr7.onrender.com/data/${id}`, {
+        method: "DELETE",
+      })
+
+      if (!res.ok) {
+        throw new Error("Failed to delete news")
+      }
+
+      return id
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue({error: error.message})
+    }
+  }
+)
+
 const initialState = {
   allNews: null as any,
   loading: false,
@@ -55,6 +97,14 @@ export const dataSlice = createSlice({
         state.error = null
         state.allNews = payload
         state.loading = false
+      })
+      .addCase(createNews.fulfilled, (state, {payload}) => {
+        state.allNews.push(payload)
+      })
+      .addCase(deleteNews.fulfilled, (state, {payload}) => {
+        state.allNews = state.allNews.filter(
+          (news: NewsObj) => news.id !== payload
+        )
       })
   },
 })

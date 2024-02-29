@@ -2,8 +2,12 @@ import {nanoid} from "nanoid"
 import {FormEvent, useState} from "react"
 import {useNavigate} from "react-router-dom"
 import {toast} from "react-toastify"
+import {NewsObj} from "../interface/allDataInterface"
+import {useDispatch} from "react-redux"
+import {createNews} from "../redux/dataSlice"
 
 function Create() {
+  const dispatch = useDispatch()
   const [loading, setLoading] = useState<boolean>(false)
   const navigate = useNavigate()
   function isValidImageExtension(filename: string): boolean {
@@ -23,14 +27,14 @@ function Create() {
     return formattedDate
   }
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     setLoading(true)
     e.preventDefault()
     const formData = new FormData(e.currentTarget)
     const img = formData.get("img") as string
-    const title = formData.get("title")
-    const description = formData.get("description")
-    const author = formData.get("author")
+    const title = formData.get("title") as string
+    const description = formData.get("description") as string
+    const author = formData.get("author") as string
 
     if (!isValidImageExtension(img)) {
       toast.error(
@@ -40,7 +44,7 @@ function Create() {
       return
     }
 
-    const newNews: object = {
+    const newNews: NewsObj = {
       id: nanoid(),
       img,
       title,
@@ -49,23 +53,15 @@ function Create() {
       date: todayFunc(),
     }
 
-    fetch("https://newsdata-cdr7.onrender.com/data", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(newNews),
-    })
-      .then(() => {
-        setLoading(false)
-        navigate("/")
-        toast.success("Successfully created news")
-      })
-      .catch((error: any) => {
-        toast.error(error.message)
-      })
+    try {
+      await dispatch(createNews(newNews) as any)
+      setLoading(false)
+      navigate("/")
+      toast.success("Successfully created news")
+    } catch (error: any) {
+      toast.error(error.message)
+    }
   }
-
   return (
     <form onSubmit={handleSubmit} className="w-full flex justify-center mt-6">
       <label className="form-control max-w-sm w-full">

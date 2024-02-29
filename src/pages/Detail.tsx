@@ -1,52 +1,35 @@
-import {useEffect, useState} from "react"
+import {useState} from "react"
 import {Link, useNavigate, useParams} from "react-router-dom"
-import {getData} from "../hooks/useGetData"
-import {NewsObj} from "../interface/allDataInterface"
 import Loading from "../components/Loading"
 import {toast} from "react-toastify"
+import {useDispatch, useSelector} from "react-redux"
+import {deleteNews} from "../redux/dataSlice"
 
 function Detail() {
   const {id} = useParams()
   const [loading, setLoading] = useState<boolean>(false)
-  const [item, setItem] = useState<NewsObj | null>(null)
+  const dispatch = useDispatch<any>()
   const navigate = useNavigate()
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await getData(
-          `https://newsdata-cdr7.onrender.com/data?id=${id}`
-        )
-        data.forEach((item: NewsObj) => {
-          setItem(item)
-        })
-      } catch (error: any) {
-        toast.error(error.message)
-      }
-    }
-    fetchData()
-  }, [])
+  const {allNews} = useSelector((state: any) => state.dataSlice)
 
-  const handleDelete = async (id: string | number) => {
-    try {
-      setLoading(true)
-      const res = await fetch(`https://newsdata-cdr7.onrender.com/data/${id}`, {
-        method: "DELETE",
-      })
-      if (!res.ok) {
+  const handleDelete = (itemId: string | number) => {
+    setLoading(true)
+    dispatch(deleteNews(itemId))
+      .then(() => {
+        toast.success("News deleted successfully")
+        navigate("/")
         setLoading(false)
-        toast.error("Error !")
-      }
-      setLoading(false)
-      toast.success("News deleted successfully")
-      navigate("/")
-    } catch (error: any) {
-      console.error(error.message)
-      toast.error("Failed to delete item")
-      setLoading(false)
-    }
+      })
+      .catch((error: {message: any}) => {
+        console.error(error.message)
+        toast.error("Failed to delete item")
+        setLoading(false)
+      })
   }
 
+  const item =
+    allNews && allNews.find((news: {id: string | number}) => news.id === id)
   return (
     <>
       {item ? (

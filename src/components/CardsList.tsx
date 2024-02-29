@@ -7,7 +7,9 @@ import {fetchData} from "../redux/dataSlice"
 
 function CardsList() {
   const dispatch = useDispatch<any>()
-  const {allNews, filterData} = useSelector((store: any) => store.dataSlice)
+  const {allNews, filterData, loading} = useSelector(
+    (store: any) => store.dataSlice
+  )
 
   const newsToDisplay = filterData.length > 0 ? filterData : allNews
 
@@ -17,6 +19,7 @@ function CardsList() {
 
   return (
     <>
+      {loading && <Loading />}
       <div className="gap-x-4 grid grid-cols-3 gap-y-6 mt-6 max-[970px]:grid-cols-2 justify-items-center max-[666px]:grid-cols-1">
         {newsToDisplay &&
           Array.isArray(newsToDisplay) &&
@@ -29,7 +32,6 @@ function CardsList() {
           No news, please add news!
         </h1>
       )}
-      {!allNews && <Loading />}
     </>
   )
 }
