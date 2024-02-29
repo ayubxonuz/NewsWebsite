@@ -1,0 +1,23 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  body,
+  html,
+  #root {
+    @apply h-full font-['Noto_Sans'];
+  }
+
+  #root {
+    @apply flex-col flex;
+  }
+
+  main {
+    @apply flex-1;
+  }
+  .max-container {
+    @apply max-w-[63rem] w-full p-6 mx-auto;
+  }
+}
