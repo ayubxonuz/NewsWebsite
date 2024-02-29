@@ -1,6 +1,6 @@
 function Footer() {
   return (
-    <div className="py-10 bg-base-200">
+    <div className="py-10 mt-[300px] bg-base-200">
       <footer className="footer max-container text-base-content">
         <nav>
           <h6 className="footer-title">Services</h6>
