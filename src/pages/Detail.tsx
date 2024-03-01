@@ -1,11 +1,18 @@
-import {useState} from "react"
+import {useEffect, useState} from "react"
 import {Link, useNavigate, useParams} from "react-router-dom"
 import Loading from "../components/Loading"
 import {toast} from "react-toastify"
 import {useDispatch, useSelector} from "react-redux"
 import {deleteNews} from "../redux/dataSlice"
+import {animateScroll} from "react-scroll"
 
 function Detail() {
+  useEffect(() => {
+    animateScroll.scrollToTop({
+      duration: 500,
+      smooth: true,
+    })
+  }, [])
   const {id} = useParams()
   const [loading, setLoading] = useState<boolean>(false)
   const dispatch = useDispatch<any>()

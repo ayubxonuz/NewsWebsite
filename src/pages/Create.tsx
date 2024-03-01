@@ -1,12 +1,19 @@
 import {nanoid} from "nanoid"
-import {FormEvent, useState} from "react"
+import {FormEvent, useEffect, useState} from "react"
 import {useNavigate} from "react-router-dom"
 import {toast} from "react-toastify"
 import {NewsObj} from "../interface/allDataInterface"
 import {useDispatch} from "react-redux"
 import {createNews} from "../redux/dataSlice"
+import { animateScroll } from "react-scroll"
 
 function Create() {
+  useEffect(() => {
+    animateScroll.scrollToTop({
+      duration: 500,
+      smooth: true,
+    })
+  }, [])
   const dispatch = useDispatch()
   const [loading, setLoading] = useState<boolean>(false)
   const navigate = useNavigate()
