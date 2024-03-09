@@ -31,7 +31,6 @@ function Detail() {
         setLoading(false)
       })
       .catch((error: {message: any}) => {
-        console.error(error.message)
         toast.error("Failed to delete item")
         setLoading(false)
       })

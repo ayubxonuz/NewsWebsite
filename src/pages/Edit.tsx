@@ -8,13 +8,10 @@ function Edit() {
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
   const {singleData} = useSelector((store: RootState) => store.dataSlice)
-  console.log(singleData)
 
   useEffect(() => {
     if (Object.keys(singleData).length === 0) {
       navigate("/")
-    } else {
-      console.log(1)
     }
   }, [])
 
