@@ -1,7 +1,7 @@
 import {FormEvent, useEffect, useState} from "react"
 import {useSelector} from "react-redux"
-import {NewsObj, RootState} from "../interface/allDataInterface"
-import {json, useNavigate} from "react-router-dom"
+import {RootState} from "../interface/allDataInterface"
+import {useNavigate} from "react-router-dom"
 import {toast} from "react-toastify"
 
 function Edit() {
@@ -44,16 +44,13 @@ function Edit() {
     }
     try {
       setLoading(true)
-      const req = await fetch(
-        `https://newsdata-cdr7.onrender.com/data/${singleData.id}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(editNews),
-        }
-      ).then(() => {
+      await fetch(`https://newsdata-cdr7.onrender.com/data/${singleData.id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(editNews),
+      }).then(() => {
         toast.success("Successfully edited news")
         setLoading(false)
         navigate("/")
