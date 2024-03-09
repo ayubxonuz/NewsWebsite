@@ -18,7 +18,6 @@ function Create() {
   const [loading, setLoading] = useState<boolean>(false)
   const navigate = useNavigate()
 
-
   function isValidImageExtension(filename: string): boolean {
     const allowedExtensions = [".jpg", ".png", ".svg"]
     const extension = filename.slice(filename.lastIndexOf(".")).toLowerCase()
@@ -68,7 +67,7 @@ function Create() {
       navigate("/")
       toast.success("Successfully created news")
     } catch (error: any) {
-      toast.error(error.message)
+      toast.error(error)
     }
   }
   return (

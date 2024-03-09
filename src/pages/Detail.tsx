@@ -30,7 +30,7 @@ function Detail() {
         navigate("/")
         setLoading(false)
       })
-      .catch((error: {message: any}) => {
+      .catch((error) => {
         toast.error("Failed to delete item")
         setLoading(false)
       })
