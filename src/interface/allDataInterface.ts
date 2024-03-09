@@ -6,3 +6,14 @@ export interface NewsObj {
   author: string
   date: string
 }
+
+export interface RootState {
+  dataSlice: {
+    allNews: NewsObj[]
+    loading: boolean
+    error: null
+    searchTerm: string
+    filterData: [] | NewsObj[]
+    singleData: NewsObj
+  }
+}

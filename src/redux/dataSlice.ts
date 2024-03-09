@@ -59,11 +59,12 @@ export const deleteNews = createAsyncThunk(
 )
 
 const initialState = {
-  allNews: null as any,
+  allNews: null as unknown,
   loading: false,
   error: null,
   searchTerm: "",
   filterData: [] as NewsObj[],
+  singleData: {},
 }
 
 export const dataSlice = createSlice({
@@ -77,9 +78,14 @@ export const dataSlice = createSlice({
       state.searchTerm = action.payload
     },
     filterArr: (state) => {
-      state.filterData = state.allNews.filter((news: NewsObj) =>
-        news.title.toLowerCase().includes(state.searchTerm.toLowerCase())
-      )
+      if (Array.isArray(state.allNews)) {
+        state.filterData = state.allNews.filter((news: NewsObj) =>
+          news.title.toLowerCase().includes(state.searchTerm.toLowerCase())
+        )
+      }
+    },
+    singleData: (state, {payload}) => {
+      state.singleData = payload
     },
   },
 
@@ -99,16 +105,16 @@ export const dataSlice = createSlice({
         state.loading = false
       })
       .addCase(createNews.fulfilled, (state, {payload}) => {
-        state.allNews.push(payload)
+        Array.isArray(state.allNews) && state.allNews.push(payload)
       })
       .addCase(deleteNews.fulfilled, (state, {payload}) => {
-        state.allNews = state.allNews.filter(
-          (news: NewsObj) => news.id !== payload
-        )
+        Array.isArray(state.allNews) &&
+          state.allNews.filter((news: NewsObj) => news.id !== payload)
       })
   },
 })
 
-export const {setAllData, setSearchTerm, filterArr} = dataSlice.actions
+export const {setAllData, singleData, setSearchTerm, filterArr} =
+  dataSlice.actions
 
 export default dataSlice.reducer

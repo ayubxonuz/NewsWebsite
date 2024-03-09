@@ -1,23 +1,22 @@
-import {nanoid} from "nanoid"
 import {FormEvent, useEffect, useState} from "react"
-import {useNavigate} from "react-router-dom"
+import {useSelector} from "react-redux"
+import {NewsObj, RootState} from "../interface/allDataInterface"
+import {json, useNavigate} from "react-router-dom"
 import {toast} from "react-toastify"
-import {NewsObj} from "../interface/allDataInterface"
-import {createNews} from "../redux/dataSlice"
-import {animateScroll} from "react-scroll"
-import {useAppDispatch} from "../redux/store"
 
-function Create() {
-  useEffect(() => {
-    animateScroll.scrollToTop({
-      duration: 500,
-      smooth: true,
-    })
-  }, [])
-  const dispatch = useAppDispatch()
-  const [loading, setLoading] = useState<boolean>(false)
+function Edit() {
+  const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
+  const {singleData} = useSelector((store: RootState) => store.dataSlice)
+  console.log(singleData)
 
+  useEffect(() => {
+    if (Object.keys(singleData).length === 0) {
+      navigate("/")
+    } else {
+      console.log(1)
+    }
+  }, [])
 
   function isValidImageExtension(filename: string): boolean {
     const allowedExtensions = [".jpg", ".png", ".svg"]
@@ -25,19 +24,7 @@ function Create() {
     return allowedExtensions.includes(extension)
   }
 
-  const todayFunc = () => {
-    const today: Date = new Date()
-    const options: Intl.DateTimeFormatOptions = {
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-    }
-    const formattedDate: string = today.toLocaleDateString("en-US", options)
-    return formattedDate
-  }
-
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    setLoading(true)
     e.preventDefault()
     const formData = new FormData(e.currentTarget)
     const img = formData.get("img") as string
@@ -52,27 +39,38 @@ function Create() {
       setLoading(false)
       return
     }
-
-    const newNews: NewsObj = {
-      id: nanoid(),
+    const editNews = {
       img,
       title,
       description,
       author,
-      date: todayFunc(),
     }
-
     try {
-      await dispatch(createNews(newNews))
-      setLoading(false)
-      navigate("/")
-      toast.success("Successfully created news")
+      setLoading(true)
+      const req = await fetch(
+        `https://newsdata-cdr7.onrender.com/data/${singleData.id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(editNews),
+        }
+      ).then(() => {
+        toast.success("Successfully edited news")
+        setLoading(false)
+        navigate("/")
+      })
     } catch (error: any) {
       toast.error(error.message)
     }
   }
+
   return (
-    <form onSubmit={handleSubmit} className="w-full flex justify-center mt-6">
+    <form
+      onSubmit={(e) => handleSubmit(e)}
+      className="w-full flex justify-center mt-6"
+    >
       <label className="form-control max-w-sm w-full">
         <div className="label">
           <span className="label-text">Img URL</span>
@@ -81,6 +79,7 @@ function Create() {
           required
           type="url"
           name="img"
+          defaultValue={singleData.img}
           placeholder="Type here"
           className="input input-bordered mb-3"
         />
@@ -91,6 +90,7 @@ function Create() {
           required
           type="text"
           name="title"
+          defaultValue={singleData.title}
           placeholder="Type here"
           className="input input-bordered mb-3"
         />
@@ -101,6 +101,7 @@ function Create() {
           required
           type="text"
           name="description"
+          defaultValue={singleData.description}
           placeholder="Type here"
           className="input input-bordered mb-3"
         />
@@ -112,16 +113,17 @@ function Create() {
           maxLength={20}
           type="text"
           name="author"
+          defaultValue={singleData.author}
           placeholder="Type here"
           className="input input-bordered mb-3"
         />
         {loading ? (
           <button type="button" className="btn btn-disabled btn-primary mt-2">
-            Create <span className="loading"></span>
+            Edit <span className="loading"></span>
           </button>
         ) : (
           <button type="submit" className="btn btn-primary">
-            Create
+            Edit
           </button>
         )}
       </label>
@@ -129,4 +131,4 @@ function Create() {
   )
 }
 
-export default Create
+export default Edit

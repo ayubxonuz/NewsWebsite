@@ -1,14 +1,15 @@
 import Cards from "./Cards"
-import {NewsObj} from "../interface/allDataInterface"
+import {NewsObj, RootState} from "../interface/allDataInterface"
 import Loading from "./Loading"
-import {useDispatch, useSelector} from "react-redux"
+import {useSelector} from "react-redux"
 import {useEffect} from "react"
 import {fetchData} from "../redux/dataSlice"
+import {useAppDispatch} from "../redux/store"
 
 function CardsList() {
-  const dispatch = useDispatch<any>()
+  const dispatch = useAppDispatch()
   const {allNews, filterData, loading} = useSelector(
-    (store: any) => store.dataSlice
+    (store: RootState) => store.dataSlice
   )
 
   const newsToDisplay = filterData.length > 0 ? filterData : allNews

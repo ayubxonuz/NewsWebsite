@@ -3,6 +3,7 @@ import RootLayout from "./layout/RootLayout"
 import Home from "./components/Home"
 import Detail from "./pages/Detail"
 import Create from "./pages/Create"
+import Edit from "./pages/Edit"
 
 function App() {
   const routest = createBrowserRouter([
@@ -21,6 +22,10 @@ function App() {
         {
           path: "/create",
           element: <Create />,
+        },
+        {
+          path: "/edit",
+          element: <Edit />,
         },
       ],
     },

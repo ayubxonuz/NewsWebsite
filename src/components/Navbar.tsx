@@ -1,11 +1,13 @@
 import {useEffect, useState, ChangeEvent} from "react"
 import {NavLink} from "react-router-dom"
-import {useDispatch, useSelector} from "react-redux"
+import {useSelector} from "react-redux"
 import {fetchData, setSearchTerm, filterArr} from "../redux/dataSlice"
+import {useAppDispatch} from "../redux/store"
+import {RootState} from "../interface/allDataInterface"
 
 function Navbar() {
-  const dispatch = useDispatch<any>()
-  const {searchTerm} = useSelector((store: any) => store.dataSlice)
+  const dispatch = useAppDispatch()
+  const {searchTerm} = useSelector((store: RootState) => store.dataSlice)
 
   useEffect(() => {
     dispatch(fetchData())
